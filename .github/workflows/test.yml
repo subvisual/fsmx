@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         otp: ['22.2', '23.0']
-        elixir: ['1.8.2', '1.9.4', '1.10.3']
+        elixir: ['1.8', '1.9', '1.10']
 
     services:
       postgres:
