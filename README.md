@@ -123,7 +123,7 @@ Fsmx.transition(struct, "four")
 Since logic can grow a lot, and fall out of scope in your structs/schemas, it's often useful to separate
 all that business logic into a separate module:
 
-```
+```elixir
 defmodule App.StateMachine do
   defstruct [:state]
 
