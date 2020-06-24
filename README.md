@@ -1,11 +1,10 @@
 # Fsmx
 
-**TODO: Add description**
+A Finite-state machine implementation in Elixir, with opt-in Ecto friendliness
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `fsmx` to your list of dependencies in `mix.exs`:
+Add dictator to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +14,16 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/fsmx](https://hexdocs.pm/fsmx).
+## Usage
 
+TODO
+
+## Ecto support
+
+TODO
+
+# About
+
+`Fsmx` is maintained by [Subvisual](http://subvisual.com).
+
+[<img alt="Subvisual logo" src="https://raw.githubusercontent.com/subvisual/guides/master/github/templates/subvisual_logo_with_name.png" width="350px" />](https://subvisual.com)
