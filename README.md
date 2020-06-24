@@ -230,7 +230,8 @@ Ecto.Multi.new()
 |> Fsmx.transition_multi(schema, "transition-id", "two", %{"data" => %{foo: :bar}})
 |> Repo.transaction()
 
-# this is dangerous, because your transition callback will run before the whole database transaction has run
+# this is dangerous, because your transition callback
+# will run before the whole database transaction has run
 Ecto.Multi.new()
 |> Fsmx.transition_multi(schema, "transition-id", "two", %{"data" => %{foo: :bar}})
 |> Ecto.Multi.update(:update, a_very_unreliable_changeset())
