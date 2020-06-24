@@ -271,7 +271,8 @@ Ecto.Multi.new()
 
 ## Contributing
 
-Feel free to contribute.
+Feel free to contribute. Either by opening an issue, a Pull Request, or contacting the
+[team](mailto:miguel@subvisual.com) directly
 
 If you found a bug, please open an issue. You can also open a PR for bugs or new
 features. PRs will be reviewed and subject to our style guide and linters.
