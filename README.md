@@ -118,6 +118,36 @@ Fsmx.transition(struct, "four")
 # {:error, "cannot react state four without data"}
 ```
 
+### Decoupling logic from data
+
+Since logic can grow a lot, and fall out of scope in your structs/schemas, it's often useful to separate
+all that business logic into a separate module:
+
+```
+defmodule App.StateMachine do
+  defstruct [:state]
+
+  use Fsmx, fsm: App.Logic
+end
+
+defmodule App.BusinessLogic do
+  use Fsmx.Fsm, transitions: %{
+    "one" => ["two", "three"],
+    "two" => ["three", "four"],
+    "three" => "four"
+  }
+
+  # callbacks go here now
+  def before_transition(struct, "two", _destination_state) do
+    {:ok, %{struct | data: %{foo: :bar}}}
+  end
+
+  def before_transition(%{data: nil}, _initial_state, "four") do
+    {:error, "cannot reacth state four without data"}
+  end
+end
+```
+
 ## Ecto support
 
 Support for Ecto is built in, as long as `ecto` is in your `mix.exs` dependencies. With it, you get the ability to
