@@ -1,20 +1,42 @@
 defmodule Fsmx do
-  @type state_t :: binary
-
-  def transition(%mod{state: state} = struct, new_state) do
-    fsm = mod.__fsmx__()
-    transitions = fsm.__fsmx__(:transitions)
-
-    with :ok <- validate_transition(state, new_state, transitions),
-         {:ok, struct} <- fsm.before_transition(struct, state, new_state),
-         {:ok, struct} <- do_transition(struct, new_state),
-         {:ok, struct} <- fsm.after_transition(struct, state, new_state) do
-      {:ok, struct}
+  def transition(struct, new_state) do
+    with {:ok, struct} <- before_transition(struct, new_state) do
+      {:ok, %{struct | state: new_state}}
     end
   end
 
-  defp do_transition(struct, new_state) do
-    {:ok, %{struct | state: new_state}}
+  if Code.ensure_loaded?(Ecto) do
+    def transition_changeset(%mod{state: state} = schema, new_state, params \\ %{}) do
+      fsm = mod.__fsmx__()
+
+      with {:ok, schema} <- before_transition(schema, new_state, params) do
+        schema
+        |> Ecto.Changeset.change()
+        |> Ecto.Changeset.put_change(:state, new_state)
+        |> fsm.transition_changeset(state, new_state, params)
+      end
+    end
+
+    def transition_multi(multi, %mod{state: state} = schema, id, new_state, params \\ %{}) do
+      fsm = mod.__fsmx__()
+
+      with {:ok, changeset} <- transition_changeset(schema, new_state, params) do
+        multi
+        |> Ecto.Multi.update(id, changeset)
+        |> Ecto.Multi.run("#{id}-callback", fn _repo, changes ->
+          fsm.after_transition_multi(Map.fetch!(changes, id), state, new_state)
+        end)
+      end
+    end
+  end
+
+  defp before_transition(%mod{state: state} = struct, new_state, params \\ %{}) do
+    fsm = mod.__fsmx__()
+    transitions = fsm.__fsmx__(:transitions)
+
+    with :ok <- validate_transition(state, new_state, transitions) do
+      fsm.before_transition(struct, state, new_state)
+    end
   end
 
   defp validate_transition(state, new_state, transitions) do
