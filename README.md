@@ -23,6 +23,7 @@ Highlights:
   * [Transition changesets](#transition-changesets)
   * [Transition with Ecto.Multi](#transition-with-ecto-multi)
 * [A note on side effects](#a-note-on-side-effects)
+* [Contributing](#a-note-on-side-effects)
 
 
 ## Installation
@@ -237,6 +238,13 @@ Ecto.Multi.new()
 |> Ecto.Multi.update(:update, a_very_unreliable_changeset())
 |> Repo.transaction()
 ```
+
+## Contributing
+
+Feel free to contribute.
+
+If you found a bug, please open an issue. You can also open a PR for bugs or new
+features. PRs will be reviewed and subject to our style guide and linters.
 
 # About
 
