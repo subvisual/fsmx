@@ -20,12 +20,12 @@ jobs:
     services:
       postgres:
         image: postgres:9.6.2
-      env:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: fsmx_test
-      ports:
-        - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fsmx_test
+        ports:
+          - 5432:5432
 
     env:
       POSTGRES_HOST: postgres
