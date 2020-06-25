@@ -1,4 +1,8 @@
 defmodule Fsmx do
+  @moduledoc """
+  """
+
+  @spec transition(struct(), binary()) :: {:ok, struct} | {:error, any}
   def transition(struct, new_state) do
     with {:ok, struct} <- before_transition(struct, new_state) do
       {:ok, %{struct | state: new_state}}
@@ -6,7 +10,8 @@ defmodule Fsmx do
   end
 
   if Code.ensure_loaded?(Ecto) do
-    def transition_changeset(%mod{state: state} = schema, new_state, params \\ %{}) do
+    @spec transition_changeset(struct(), binary, map) :: {:ok, Ecto.Changeset.t()} | {:error, any}
+    def(transition_changeset(%mod{state: state} = schema, new_state, params \\ %{})) do
       fsm = mod.__fsmx__()
 
       with {:ok, schema} <- before_transition(schema, new_state) do
@@ -17,6 +22,8 @@ defmodule Fsmx do
       end
     end
 
+    @spec transition_multi(Ecto.Multi.t(), struct(), any, binary, map) ::
+            {:ok, Ecto.Multi.t()} | {:error, any}
     def transition_multi(multi, %mod{state: state} = schema, id, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
 

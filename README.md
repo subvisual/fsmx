@@ -46,7 +46,7 @@ end
 defmodule App.StateMachine do
   defstruct [:state, :data]
 
-  use Fsmx, transitions: %{
+  use Fsmx.Struct, transitions: %{
     "one" => ["two", "three"],
     "two" => ["three", "four"],
     "three" => "four"
@@ -127,7 +127,7 @@ all that business logic into a separate module:
 defmodule App.StateMachine do
   defstruct [:state]
 
-  use Fsmx, fsm: App.Logic
+  use Fsmx.Struct, fsm: App.Logic
 end
 
 defmodule App.BusinessLogic do
@@ -162,7 +162,7 @@ defmodule App.StateMachineSchema do
     field :data, :map
   end
 
-  use Fsmx, transitions: %{
+  use Fsmx.Struct, transitions: %{
     "one" => ["two", "three"],
     "two" => ["three", "four"],
     "three" => "four"
