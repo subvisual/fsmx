@@ -10,7 +10,7 @@ defmodule Fsmx do
   end
 
   if Code.ensure_loaded?(Ecto) do
-    @spec transition_changeset(struct(), binary, map) :: {:ok, Ecto.Changeset.t()} | {:error, any}
+    @spec transition_changeset(struct(), binary, map) :: Ecto.Changeset.t()
     def(transition_changeset(%mod{state: state} = schema, new_state, params \\ %{})) do
       fsm = mod.__fsmx__()
 
@@ -19,24 +19,25 @@ defmodule Fsmx do
         |> Ecto.Changeset.change()
         |> Ecto.Changeset.put_change(:state, new_state)
         |> fsm.transition_changeset(state, new_state, params)
+      else
+        {:error, msg} ->
+          schema
+          |> Ecto.Changeset.change()
+          |> Ecto.Changeset.add_error(:state, "transition_changeset failed: #{msg}")
       end
     end
 
-    @spec transition_multi(Ecto.Multi.t(), struct(), any, binary, map) ::
-            {:ok, Ecto.Multi.t()} | {:error, any}
+    @spec transition_multi(Ecto.Multi.t(), struct(), any, binary, map) :: Ecto.Multi.t()
     def transition_multi(multi, %mod{state: state} = schema, id, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
 
-      with {:ok, changeset} <- transition_changeset(schema, new_state, params) do
-        multi =
-          multi
-          |> Ecto.Multi.update(id, changeset)
-          |> Ecto.Multi.run("#{id}-callback", fn _repo, changes ->
-            fsm.after_transition_multi(Map.fetch!(changes, id), state, new_state)
-          end)
+      changeset = transition_changeset(schema, new_state, params)
 
-        {:ok, multi}
-      end
+      multi
+      |> Ecto.Multi.update(id, changeset)
+      |> Ecto.Multi.run("#{id}-callback", fn _repo, changes ->
+        fsm.after_transition_multi(Map.fetch!(changes, id), state, new_state)
+      end)
     end
   end
 

@@ -9,7 +9,7 @@ defmodule Fsmx.EctoTest do
     test "returns a changeset" do
       one = %Simple{state: "1"}
 
-      {:ok, two_changeset} = Fsmx.transition_changeset(one, "2", [])
+      two_changeset = Fsmx.transition_changeset(one, "2", [])
 
       assert %Ecto.Changeset{} = two_changeset
     end
@@ -17,7 +17,7 @@ defmodule Fsmx.EctoTest do
     test "does not change the state directly" do
       one = %Simple{state: "1"}
 
-      {:ok, two_changeset} = Fsmx.transition_changeset(one, "2", [])
+      two_changeset = Fsmx.transition_changeset(one, "2", [])
 
       assert two_changeset.data.state == "1"
     end
@@ -25,7 +25,7 @@ defmodule Fsmx.EctoTest do
     test "includes a change of the state field" do
       one = %Simple{state: "1"}
 
-      {:ok, two_changeset} = Fsmx.transition_changeset(one, "2", [])
+      two_changeset = Fsmx.transition_changeset(one, "2", [])
 
       assert Ecto.Changeset.get_change(two_changeset, :state) == "2"
     end
@@ -35,7 +35,7 @@ defmodule Fsmx.EctoTest do
     test "calls before_transition/2 on struct" do
       one = %WithCallbacks.ValidBefore{state: "1", before: false}
 
-      {:ok, two} = Fsmx.transition_changeset(one, "2")
+      two = Fsmx.transition_changeset(one, "2")
 
       assert %WithCallbacks.ValidBefore{before: "1"} = two.data
     end
@@ -43,7 +43,10 @@ defmodule Fsmx.EctoTest do
     test "fails if before_transition/2 returns an error" do
       one = %WithCallbacks.InvalidBefore{state: "1", before: false}
 
-      {:error, :before_failed} = Fsmx.transition_changeset(one, "2")
+      changeset = Fsmx.transition_changeset(one, "2")
+
+      refute changeset.valid?
+      assert changeset.errors == [state: {"transition_changeset failed: before_failed", []}]
     end
   end
 
@@ -51,7 +54,7 @@ defmodule Fsmx.EctoTest do
     test "works just the same" do
       one = %WithSeparateFsm{state: "1"}
 
-      {:ok, two} = Fsmx.transition_changeset(one, "2")
+      two = Fsmx.transition_changeset(one, "2")
 
       assert %WithSeparateFsm{before: "1"} = two.data
     end

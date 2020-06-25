@@ -22,8 +22,7 @@ defmodule Fsmx.Fsm do
   @callback before_transition(struct, binary, binary) :: {:ok, struct} | {:error, any}
 
   if Code.ensure_loaded?(Ecto) do
-    @callback transition_changeset(struct, binary, binary) ::
-                {:ok, Ecto.Changeset.t()} | {:error, any}
+    @callback transition_changeset(struct, binary, binary) :: Ecto.Changeset.t()
     @callback after_transition_multi(struct, binary, binary) :: {:ok, struct} | {:error, any}
   end
 
@@ -43,7 +42,7 @@ defmodule Fsmx.Fsm do
       def before_transition(struct, _from, _to), do: {:ok, struct}
 
       if Code.ensure_loaded?(Ecto) do
-        def transition_changeset(changeset, _from, _to, _params), do: {:ok, changeset}
+        def transition_changeset(changeset, _from, _to, _params), do: changeset
         def after_transition_multi(struct, _from, _to), do: {:ok, struct}
       end
     end
