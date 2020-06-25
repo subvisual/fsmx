@@ -50,7 +50,7 @@ defmodule Fsmx.MixProject do
       maintainers: ["Miguel Palhas"],
       licenses: ["ISC"],
       links: %{"GitHub" => "https://github.com/subvisual/fsmx"},
-      files: ~w(.formatter.exs mix.exs README.md lib)
+      files: ~w(.formatter.exs mix.exs README.md lib LICENSE)
     ]
   end
 
