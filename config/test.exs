@@ -2,7 +2,7 @@ use Mix.Config
 
 config :fsmx, ecto_repos: [Fsmx.Repo]
 
-config :postgrex, Fsmx.Repo,
+config :fsmx, Fsmx.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: System.get_env("POSTGRES_USER") || "postgres",
   password: System.get_env("POSTGRES_PASS") || "postgres",

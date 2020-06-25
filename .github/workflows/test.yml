@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - mp/test
     tags:
       - "*"
   pull_request:
@@ -34,9 +35,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Setup Deps Cache
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: v1-deps-${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            v1-deps-${{ runner.os }}-
+
+      - name: Setup Build Cache
+        uses: actions/cache@v1
+        with:
+          path: _build
+          key: v1-build-${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            v1-build-${{ runner.os }}-
+
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
-      - run: mix ecto.create
-      - run: mix ecto.migrate
+      - run: mix deps.compile
+      - run: mix compile
+      - run: MIX_ENV=test mix ecto.migrate
       - run: mix test

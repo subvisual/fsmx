@@ -1,6 +1,5 @@
 defmodule Fsmx.Repo do
   use Ecto.Repo,
-    otp_app: :postgrex,
-    adapter: Ecto.Adapters.Postgres,
-    priv: "test/support/repo/migrations"
+    otp_app: :fsmx,
+    adapter: Ecto.Adapters.Postgres
 end
