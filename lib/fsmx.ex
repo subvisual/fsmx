@@ -28,11 +28,14 @@ defmodule Fsmx do
       fsm = mod.__fsmx__()
 
       with {:ok, changeset} <- transition_changeset(schema, new_state, params) do
-        multi
-        |> Ecto.Multi.update(id, changeset)
-        |> Ecto.Multi.run("#{id}-callback", fn _repo, changes ->
-          fsm.after_transition_multi(Map.fetch!(changes, id), state, new_state)
-        end)
+        multi =
+          multi
+          |> Ecto.Multi.update(id, changeset)
+          |> Ecto.Multi.run("#{id}-callback", fn _repo, changes ->
+            fsm.after_transition_multi(Map.fetch!(changes, id), state, new_state)
+          end)
+
+        {:ok, multi}
       end
     end
   end
