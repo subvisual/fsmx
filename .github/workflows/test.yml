@@ -56,5 +56,5 @@ jobs:
       - run: mix deps.get
       - run: mix deps.compile
       - run: mix compile
-      - run: mix ecto.migrate
+      - run: MIX_ENV=test mix ecto.migrate
       - run: mix test
