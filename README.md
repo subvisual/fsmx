@@ -33,7 +33,7 @@ Add dictator to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:fsmx, "~> 0.1.0"}
+    {:fsmx, "~> 0.2.0"}
   ]
 end
 ```
