@@ -9,7 +9,7 @@ defmodule Fsmx do
     def transition_changeset(%mod{state: state} = schema, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
 
-      with {:ok, schema} <- before_transition(schema, new_state, params) do
+      with {:ok, schema} <- before_transition(schema, new_state) do
         schema
         |> Ecto.Changeset.change()
         |> Ecto.Changeset.put_change(:state, new_state)
@@ -30,7 +30,7 @@ defmodule Fsmx do
     end
   end
 
-  defp before_transition(%mod{state: state} = struct, new_state, params \\ %{}) do
+  defp before_transition(%mod{state: state} = struct, new_state) do
     fsm = mod.__fsmx__()
     transitions = fsm.__fsmx__(:transitions)
 
