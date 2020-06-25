@@ -8,6 +8,7 @@ config :postgrex, Fsmx.Repo,
   password: System.get_env("POSTGRES_PASS") || "postgres",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   database: "fsmx_test",
+  show_sensitive_data_on_connection_error: true,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :logger, level: :warn
