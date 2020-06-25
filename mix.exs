@@ -6,15 +6,16 @@ defmodule Fsmx.MixProject do
   def project do
     [
       app: :fsmx,
-      description: description(),
       version: @version,
       elixir: "~> 1.8",
-      applications: applications(Mix.env()),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      package: package(),
+      applications: applications(Mix.env()),
       deps: deps(),
-      docs: docs()
+      description: description(),
+      package: package(),
+      docs: docs(),
+      package: package()
     ]
   end
 
@@ -39,9 +40,6 @@ defmodule Fsmx.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
-
-  defp package do
-  end
 
   defp description do
     "A Finite-state machine implementation in Elixir, with opt-in Ecto friendliness."
