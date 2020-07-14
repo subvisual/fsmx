@@ -127,7 +127,7 @@ all that business logic into a separate module:
 defmodule App.StateMachine do
   defstruct [:state]
 
-  use Fsmx.Struct, fsm: App.Logic
+  use Fsmx.Struct, fsm: App.BusinessLogic
 end
 
 defmodule App.BusinessLogic do
