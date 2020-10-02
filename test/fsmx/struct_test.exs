@@ -23,6 +23,13 @@ defmodule Fsmx.StructTest do
 
       assert msg == "invalid transition from 1 to 3"
     end
+
+    test ":* means the state can transit to any other state" do
+      three = %Simple{state: "3"}
+
+      assert {:ok, %{state: "1"}} = Fsmx.transition(three, "1")
+      assert {:ok, %{state: "2"}} = Fsmx.transition(three, "2")
+    end
   end
 
   describe "transition/2 with before_callbacks" do

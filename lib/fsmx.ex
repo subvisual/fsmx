@@ -11,7 +11,7 @@ defmodule Fsmx do
 
   if Code.ensure_loaded?(Ecto) do
     @spec transition_changeset(struct(), binary, map) :: Ecto.Changeset.t()
-    def(transition_changeset(%mod{state: state} = schema, new_state, params \\ %{})) do
+    def transition_changeset(%mod{state: state} = schema, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
 
       with {:ok, schema} <- before_transition(schema, new_state) do
@@ -61,6 +61,7 @@ defmodule Fsmx do
     end
   end
 
+  defp is_or_contains?(:*, _), do: true
   defp is_or_contains?(state, state), do: true
   defp is_or_contains?(states, state) when is_list(states), do: Enum.member?(states, state)
   defp is_or_contains?(_, _), do: false

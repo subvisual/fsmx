@@ -50,6 +50,7 @@ defmodule App.StateMachine do
     "one" => ["two", "three"],
     "two" => ["three", "four"],
     "three" => "four"
+    "four" => :* # can transition to any state
   }
 end
 ```
