@@ -14,6 +14,14 @@ defmodule Fsmx.EctoTest do
       assert %Ecto.Changeset{} = two_changeset
     end
 
+    test "returns a changeset with atom state" do
+      one = %Simple{state: "2"}
+
+      changeset = Fsmx.transition_changeset(one, :"3", [])
+
+      assert %Ecto.Changeset{} = changeset
+    end
+
     test "does not change the state directly" do
       one = %Simple{state: "1"}
 
