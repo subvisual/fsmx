@@ -28,7 +28,7 @@ Highlights:
 
 ## Installation
 
-Add dictator to your list of dependencies in `mix.exs`:
+Add fsmx to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
