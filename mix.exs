@@ -14,8 +14,7 @@ defmodule Fsmx.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
-      docs: docs(),
-      package: package()
+      docs: docs()
     ]
   end
 
