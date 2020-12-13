@@ -19,11 +19,11 @@ defmodule Fsmx.Fsm do
   end
   """
 
-  @callback before_transition(struct, Fsmx.state(), Fsmx.state()) :: {:ok, struct} | {:error, any}
+  @callback before_transition(struct, Fsmx.state_t, Fsmx.state_t) :: {:ok, struct} | {:error, any}
 
   if Code.ensure_loaded?(Ecto) do
-    @callback transition_changeset(struct, Fsmx.state(), Fsmx.state()) :: Ecto.Changeset.t()
-    @callback after_transition_multi(struct, Fsmx.state(), Fsmx.state()) ::
+    @callback transition_changeset(struct, Fsmx.state_t, Fsmx.state_t) :: Ecto.Changeset.t()
+    @callback after_transition_multi(struct, Fsmx.state_t, Fsmx.state_t) ::
                 {:ok, struct} | {:error, any}
   end
 
