@@ -47,7 +47,7 @@ defmodule Fsmx do
       end)
     end
   end
-pois
+
   defp before_transition(%mod{} = struct, new_state) do
     fsm = mod.__fsmx__()
     state = struct |> Map.fetch!(fsm.__fsmx__(:state_field))
