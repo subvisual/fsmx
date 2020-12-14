@@ -33,6 +33,7 @@ defmodule Fsmx.Fsm do
 
       @fsm Keyword.get(unquote(opts), :fsm, __MODULE__)
 
+      def __fsmx__(:state_field), do: Keyword.get(unquote(opts), :state_field, :state)
       def __fsmx__(:transitions), do: Keyword.fetch!(unquote(opts), :transitions)
       def __fsmx__(:fsm), do: @fsm
     end

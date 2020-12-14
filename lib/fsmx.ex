@@ -4,34 +4,39 @@ defmodule Fsmx do
 
   @type state_t :: binary() | atom()
 
-  @spec transition(struct(), state_t) :: {:ok, struct} | {:error, any}
-  def transition(struct, new_state) do
+  @spec transition(struct(), state_t()) :: {:ok, struct} | {:error, any}
+  def transition(%mod{} = struct, new_state) do
+    fsm = mod.__fsmx__()
     with {:ok, struct} <- before_transition(struct, new_state) do
-      {:ok, %{struct | state: new_state}}
+      state_field = fsm.__fsmx__(:state_field)
+      {:ok, struct |> Map.put(state_field,  new_state)}
     end
   end
 
   if Code.ensure_loaded?(Ecto) do
-    @spec transition_changeset(struct(), state_t, map) :: Ecto.Changeset.t()
-    def transition_changeset(%mod{state: state} = schema, new_state, params \\ %{}) do
+    @spec transition_changeset(struct(), state_t(), map) :: Ecto.Changeset.t()
+    def transition_changeset(%mod{} = schema, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
+      state_field = fsm.__fsmx__(:state_field)
+      state = schema |> Map.fetch!(state_field)
 
       with {:ok, schema} <- before_transition(schema, new_state) do
         schema
         |> Ecto.Changeset.change()
-        |> Ecto.Changeset.put_change(:state, new_state)
+        |> Ecto.Changeset.put_change(state_field, new_state)
         |> fsm.transition_changeset(state, new_state, params)
       else
         {:error, msg} ->
           schema
           |> Ecto.Changeset.change()
-          |> Ecto.Changeset.add_error(:state, "transition_changeset failed: #{msg}")
+          |> Ecto.Changeset.add_error(state_field, "transition_changeset failed: #{msg}")
       end
     end
 
     @spec transition_multi(Ecto.Multi.t(), struct(), any, state_t, map) :: Ecto.Multi.t()
-    def transition_multi(multi, %mod{state: state} = schema, id, new_state, params \\ %{}) do
+    def transition_multi(multi, %mod{} = schema, id, new_state, params \\ %{}) do
       fsm = mod.__fsmx__()
+      state = schema |> Map.fetch!(fsm.__fsmx__(:state_field))
 
       changeset = transition_changeset(schema, new_state, params)
 
@@ -42,9 +47,10 @@ defmodule Fsmx do
       end)
     end
   end
-
-  defp before_transition(%mod{state: state} = struct, new_state) do
+pois
+  defp before_transition(%mod{} = struct, new_state) do
     fsm = mod.__fsmx__()
+    state = struct |> Map.fetch!(fsm.__fsmx__(:state_field))
     transitions = fsm.__fsmx__(:transitions)
 
     with :ok <- validate_transition(state, new_state, transitions) do
