@@ -49,7 +49,7 @@ defmodule App.StateMachine do
   use Fsmx.Struct, transitions: %{
     "one" => ["two", "three"],
     "two" => ["three", "four"],
-    "three" => "four"
+    "three" => "four",
     "four" => :* # can transition to any state
   }
 end
