@@ -9,7 +9,7 @@ A Finite-state machine implementation in Elixir, with opt-in Ecto friendliness.
 Highlights:
 * Plays nicely with both bare Elixir structs and Ecto changesets
 * Ability to wrap transitions inside an Ecto.Multi for atomic updates
-* Guides you in the right direction when it comes to [side effects][a-note-on-side-effects]
+* Guides you in the right direction when it comes to [side effects](#a-note-on-side-effects)
 
 ---
 
