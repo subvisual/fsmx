@@ -60,13 +60,18 @@ defmodule Fsmx do
 
   defp validate_transition(state, new_state, transitions) do
     transitions
-    |> Map.get(state, [])
+    |> from_struct_and_any(state)
     |> is_or_contains?(new_state)
     |> if do
       :ok
     else
       {:error, "invalid transition from #{state} to #{new_state}"}
     end
+  end
+
+  defp from_struct_and_any(transition, state) do
+    Map.take(transition, [state, :*])
+    |> Enum.flat_map(&elem(&1, 1))
   end
 
   defp is_or_contains?(:*, _), do: true
