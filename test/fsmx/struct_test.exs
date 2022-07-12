@@ -1,7 +1,7 @@
 defmodule Fsmx.StructTest do
   use ExUnit.Case
 
-  alias Fsmx.TestStructs.{Simple, WithCallbacks, WithSeparateFsm}
+  alias Fsmx.TestStructs.{Simple, WithCallbacks, WithSeparateFsm, WithFallback}
 
   describe "transition/2" do
     test "can do simple transitions" do
@@ -24,11 +24,21 @@ defmodule Fsmx.StructTest do
       assert msg == "invalid transition from 1 to 3"
     end
 
-    test ":* means the state can transit to any other state" do
+    test ":* as destination means the state can transit to any other state" do
       three = %Simple{state: "3"}
 
       assert {:ok, %{state: "1"}} = Fsmx.transition(three, "1")
       assert {:ok, %{state: "2"}} = Fsmx.transition(three, "2")
+    end
+
+    test ":* as source means the state can be transitioned to from any other state" do
+      one = %WithFallback{state: "1"}
+      two = %WithFallback{state: "2"}
+      three = %WithFallback{state: "3"}
+
+      assert {:ok, %{state: "1"}} = Fsmx.transition(one, "1")
+      assert {:ok, %{state: "1"}} = Fsmx.transition(two, "1")
+      assert {:ok, %{state: "1"}} = Fsmx.transition(three, "1")
     end
   end
 
