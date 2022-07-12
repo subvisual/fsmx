@@ -60,7 +60,7 @@ defmodule Fsmx do
 
   defp validate_transition(state, new_state, transitions) do
     transitions
-    |> Map.get(state, [])
+    |> from_struct_and_any(state)
     |> is_or_contains?(new_state)
     |> if do
       :ok
@@ -69,8 +69,18 @@ defmodule Fsmx do
     end
   end
 
+  defp from_struct_and_any(transition, state) do
+    Map.take(transition, [state, :*])
+    |> IO.inspect
+    |> Enum.flat_map(fn 
+      {_, valid_states} when is_list(valid_states) -> valid_states
+      {_, valid_state} -> [valid_state]
+    end)
+    |> IO.inspect
+  end
+
   defp is_or_contains?(:*, _), do: true
   defp is_or_contains?(state, state), do: true
-  defp is_or_contains?(states, state) when is_list(states), do: Enum.member?(states, state)
+  defp is_or_contains?(states, state) when is_list(states), do: Enum.member?(states, state) || Enum.member?(states, :*)
   defp is_or_contains?(_, _), do: false
 end

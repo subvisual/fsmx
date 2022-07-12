@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - mp/test
+      - "pr-*"
     tags:
       - "*"
   pull_request:
