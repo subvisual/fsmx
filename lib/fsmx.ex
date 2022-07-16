@@ -71,12 +71,10 @@ defmodule Fsmx do
 
   defp from_source_or_fallback(transition, state) do
     Map.take(transition, [state, :*])
-    |> IO.inspect
-    |> Enum.flat_map(fn 
+    |> Enum.flat_map(fn
       {_, valid_states} when is_list(valid_states) -> valid_states
       {_, valid_state} -> [valid_state]
     end)
-    |> IO.inspect
   end
 
   defp is_or_contains?(:*, _), do: true
