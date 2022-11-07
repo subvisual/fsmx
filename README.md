@@ -106,7 +106,7 @@ defmodule App.StateMachine do
 
 
   def before_transition(%{data: nil}, _initial_state, "four") do
-    {:error, "cannot reacth state four without data"}
+    {:error, "cannot reach state four without data"}
   end
 end
 ```
@@ -117,7 +117,7 @@ Usage:
 struct = %App.StateMachine{state: "two", data: nil}
 
 Fsmx.transition(struct, "four")
-# {:error, "cannot react state four without data"}
+# {:error, "cannot reach state four without data"}
 ```
 
 ### Decoupling logic from data
@@ -145,7 +145,7 @@ defmodule App.BusinessLogic do
   end
 
   def before_transition(%{data: nil}, _initial_state, "four") do
-    {:error, "cannot reacth state four without data"}
+    {:error, "cannot reach state four without data"}
   end
 end
 ```
