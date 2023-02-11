@@ -7,24 +7,24 @@
 A Finite-state machine implementation in Elixir, with opt-in Ecto friendliness.
 
 Highlights:
-* Plays nicely with both bare Elixir structs and Ecto changesets
-* Ability to wrap transitions inside an Ecto.Multi for atomic updates
-* Guides you in the right direction when it comes to [side effects](#a-note-on-side-effects)
+
+- Plays nicely with both bare Elixir structs and Ecto changesets
+- Ability to wrap transitions inside an Ecto.Multi for atomic updates
+- Guides you in the right direction when it comes to [side effects](#a-note-on-side-effects)
 
 ---
 
-* [Installation](#installation)
-* [Usage](#usage)
-  * [Simple state machine](#simple-state-machine)
-  * [Callbacks before transitions](#callbacks-before-transitions)
-  * [Validating transitions](#validating-transitions)
-  * [Decoupling logic from data](#decoupling-logic-from-data)
-* [Ecto support](#ecto-support)
-  * [Transition changesets](#transition-changesets)
-  * [Transition with Ecto.Multi](#transition-with-ecto-multi)
-* [A note on side effects](#a-note-on-side-effects)
-* [Contributing](#a-note-on-side-effects)
-
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Simple state machine](#simple-state-machine)
+  - [Callbacks before transitions](#callbacks-before-transitions)
+  - [Validating transitions](#validating-transitions)
+  - [Decoupling logic from data](#decoupling-logic-from-data)
+- [Ecto support](#ecto-support)
+  - [Transition changesets](#transition-changesets)
+  - [Transition with Ecto.Multi](#transition-with-ecto-multi)
+- [A note on side effects](#a-note-on-side-effects)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -68,7 +68,6 @@ Fsmx.transition(struct, "four")
 # {:error, "invalid transition from one to four"}
 ```
 
-
 ### Callbacks before transitions
 
 You can implement a `before_transition/3` callback to mutate the struct when before a transition happens.
@@ -93,7 +92,6 @@ struct = %App.StateMachine{state: "two", data: nil}
 Fsmx.transition(struct, "three")
 # {:ok, %App.StateMachine{state: "three", data: %{foo: :bar}}
 ```
-
 
 ### Validating transitions
 
@@ -255,7 +253,6 @@ But if you have more complex transactions, or if you do need 99.9999% consistenc
 it, 100% is a pipe dream), then this simple library might not be for you.
 
 Consider looking at [`Sage`][sage], for instance.
-
 
 ```elixir
 # this is *probably* fine
