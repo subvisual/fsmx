@@ -223,7 +223,7 @@ Ecto.Multi.new()
 ```
 
 When using `Ecto.Multi`, you also get an additional `after_transition_multi/3` callback, where you can append additional
-operations the resulting transaction, such as dealing with side effects (but again, please no that [side effects are
+operations the resulting transaction, such as dealing with side effects (but again, please know that [side effects are
 tricky](#a-note-on-side-effects))
 
 ```elixir
