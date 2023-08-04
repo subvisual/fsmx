@@ -1,7 +1,7 @@
 defmodule Fsmx.StructTest do
   use ExUnit.Case
 
-  alias Fsmx.TestStructs.{Simple, WithCallbacks, WithSeparateFsm, WithFallback}
+  alias Fsmx.TestStructs.{Simple, WithCallbacks, WithSeparateFsm, WithFallback, MultiState}
 
   describe "transition/2" do
     test "can do simple transitions" do
@@ -65,6 +65,42 @@ defmodule Fsmx.StructTest do
       {:ok, two} = Fsmx.transition(one, "2")
 
       assert %WithSeparateFsm{state: "2", before: "1"} = two
+    end
+  end
+
+  describe "transition/2 with multiple state fields" do
+    test "the default state works the same" do
+      one = %MultiState{state: "1", other_state: "1"}
+
+      {:ok, two} = Fsmx.transition(one, "2")
+
+      assert %MultiState{state: "2", other_state: "1"} = two
+    end
+
+    test "transitioning the new state" do
+      one = %MultiState{state: "1", other_state: "1"}
+
+      {:ok, two} = Fsmx.transition(one, "2", field: :other_state)
+
+      assert %MultiState{state: "1", other_state: "2"} = two
+    end
+
+    test "fails to perform invalid transitions on the new state" do
+      one = %MultiState{state: "1", other_state: "1"}
+
+      assert {:error, msg} = Fsmx.transition(one, "3", field: :other_state)
+
+      assert msg == "invalid transition from 1 to 3 for field other_state"
+    end
+
+    test ":* as destination means the state can transit to any other state using the new state" do
+      three = %MultiState{state: "3", other_state: "3"}
+
+      assert {:ok, %{state: "3", other_state: "1"}} =
+               Fsmx.transition(three, "1", field: :other_state)
+
+      assert {:ok, %{state: "3", other_state: "2"}} =
+               Fsmx.transition(three, "2", field: :other_state)
     end
   end
 end

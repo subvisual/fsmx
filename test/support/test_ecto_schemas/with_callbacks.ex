@@ -57,4 +57,25 @@ defmodule Fsmx.TestEctoSchemas.WithCallbacks do
       {:error, :after_transition_multi_failed}
     end
   end
+
+  defmodule MultiStateValidBefore do
+    use Ecto.Schema
+
+    schema "test" do
+      field :state, :string
+      field :other_state, :string
+      field :before, :string
+    end
+
+    use Fsmx.Struct, transitions: %{"1" => "2"}
+    use Fsmx.Struct, state_field: :other_state, transitions: %{"1" => "2"}
+
+    def before_transition(struct, "1", _new_state, :state) do
+      {:ok, %{struct | before: "1"}}
+    end
+
+    def before_transition(struct, "1", _new_state, :other_state) do
+      {:ok, %{struct | before: "2"}}
+    end
+  end
 end

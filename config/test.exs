@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :fsmx, ecto_repos: [Fsmx.Repo]
 
