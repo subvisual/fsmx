@@ -41,7 +41,7 @@ defmodule Fsmx.EctoTest do
     test "works the same with multiple states" do
       one = %MultiState{state: "1", other_state: "1"}
 
-      two_changeset = Fsmx.transition_changeset(one, "2", [], field: :other_state)
+      two_changeset = Fsmx.transition_changeset(one, "2", [], state_field: :other_state)
 
       assert Ecto.Changeset.get_change(two_changeset, :other_state) == "2"
     end
@@ -71,7 +71,7 @@ defmodule Fsmx.EctoTest do
       two = Fsmx.transition_changeset(one, "2")
       assert %WithCallbacks.MultiStateValidBefore{before: "1"} = two.data
 
-      new_two = Fsmx.transition_changeset(one, "2", %{}, field: :other_state)
+      new_two = Fsmx.transition_changeset(one, "2", %{}, state_field: :other_state)
       assert %WithCallbacks.MultiStateValidBefore{before: "2"} = new_two.data
     end
   end
@@ -154,7 +154,8 @@ defmodule Fsmx.EctoTest do
     test "adds a transition changeset to the given multi for a new state" do
       one = %MultiState{state: "1", other_state: "1"}
 
-      multi = Fsmx.transition_multi(Multi.new(), one, "transition", "2", %{}, field: :other_state)
+      multi =
+        Fsmx.transition_multi(Multi.new(), one, "transition", "2", %{}, state_field: :other_state)
 
       assert %Ecto.Multi{operations: operations} = multi
 

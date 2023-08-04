@@ -80,7 +80,7 @@ defmodule Fsmx.StructTest do
     test "transitioning the new state" do
       one = %MultiState{state: "1", other_state: "1"}
 
-      {:ok, two} = Fsmx.transition(one, "2", field: :other_state)
+      {:ok, two} = Fsmx.transition(one, "2", state_field: :other_state)
 
       assert %MultiState{state: "1", other_state: "2"} = two
     end
@@ -88,7 +88,7 @@ defmodule Fsmx.StructTest do
     test "fails to perform invalid transitions on the new state" do
       one = %MultiState{state: "1", other_state: "1"}
 
-      assert {:error, msg} = Fsmx.transition(one, "3", field: :other_state)
+      assert {:error, msg} = Fsmx.transition(one, "3", state_field: :other_state)
 
       assert msg == "invalid transition from 1 to 3 for field other_state"
     end
@@ -97,10 +97,10 @@ defmodule Fsmx.StructTest do
       three = %MultiState{state: "3", other_state: "3"}
 
       assert {:ok, %{state: "3", other_state: "1"}} =
-               Fsmx.transition(three, "1", field: :other_state)
+               Fsmx.transition(three, "1", state_field: :other_state)
 
       assert {:ok, %{state: "3", other_state: "2"}} =
-               Fsmx.transition(three, "2", field: :other_state)
+               Fsmx.transition(three, "2", state_field: :other_state)
     end
   end
 end

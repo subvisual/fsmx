@@ -5,11 +5,12 @@ defmodule Fsmx do
   alias Fsmx.Fsm
 
   @type state_t :: binary() | atom()
+  @type opts_t :: [state_field: atom()]
 
-  @spec transition(struct(), state_t()) :: {:ok, struct} | {:error, any}
+  @spec transition(struct(), state_t(), opts_t()) :: {:ok, struct} | {:error, any}
   def transition(%{} = struct, new_state, opts \\ []) do
-    opts = Keyword.put_new(opts, :field, Fsm.default_state_field())
-    state_field = Keyword.get(opts, :field)
+    opts = Keyword.put_new(opts, :state_field, Fsm.default_state_field())
+    state_field = Keyword.get(opts, :state_field)
 
     with {:ok, struct} <- before_transition(struct, new_state, state_field) do
       {:ok, struct |> Map.put(state_field, new_state)}
@@ -17,10 +18,10 @@ defmodule Fsmx do
   end
 
   if Code.ensure_loaded?(Ecto) do
-    @spec transition_changeset(struct(), state_t(), map) :: Ecto.Changeset.t()
+    @spec transition_changeset(struct(), state_t(), map, opts_t()) :: Ecto.Changeset.t()
     def transition_changeset(%mod{} = schema, new_state, params \\ %{}, opts \\ []) do
-      opts = Keyword.put_new(opts, :field, Fsm.default_state_field())
-      state_field = Keyword.get(opts, :field)
+      opts = Keyword.put_new(opts, :state_field, Fsm.default_state_field())
+      state_field = Keyword.get(opts, :state_field)
       state = schema |> Map.fetch!(state_field)
       fsm = mod.__fsmx__(state_field)
 
@@ -43,14 +44,15 @@ defmodule Fsmx do
       end
     end
 
-    @spec transition_multi(Ecto.Multi.t(), struct(), any, state_t, map) :: Ecto.Multi.t()
+    @spec transition_multi(Ecto.Multi.t(), struct(), any, state_t, map, opts_t()) ::
+            Ecto.Multi.t()
     def transition_multi(multi, %mod{} = schema, id, new_state, params \\ %{}, opts \\ []) do
-      opts = Keyword.put_new(opts, :field, Fsm.default_state_field())
-      state_field = Keyword.get(opts, :field)
+      opts = Keyword.put_new(opts, :state_field, Fsm.default_state_field())
+      state_field = Keyword.get(opts, :state_field)
       state = schema |> Map.fetch!(state_field)
       fsm = mod.__fsmx__(state_field)
 
-      changeset = transition_changeset(schema, new_state, params, field: state_field)
+      changeset = transition_changeset(schema, new_state, params, state_field: state_field)
 
       multi
       |> Ecto.Multi.update(id, changeset)
