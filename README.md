@@ -33,7 +33,7 @@ Add fsmx to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:fsmx, "~> 0.2.0"}
+    {:fsmx, "~> 0.5.0"}
   ]
 end
 ```
