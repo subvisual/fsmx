@@ -51,7 +51,7 @@ defmodule App.StateMachine do
     "two" => ["three", "four"],
     "three" => "four",
     "four" => :*, # can transition to any state
-    "*" => ["five"] # can transition from any state to "five"
+    :* => ["five"] # can transition from any state to "five"
   }
 end
 ```
@@ -146,6 +146,45 @@ defmodule App.BusinessLogic do
     {:error, "cannot reach state four without data"}
   end
 end
+```
+
+### Multiple state machines in the same struct
+
+Not all structs have a single state machine, sometimes you might need more,
+using different fields for that effect. Here's how you can do it:
+
+```elixir
+defmodule App.StateMachine do
+  defstruct [:state, :other_state, :data]
+
+  use Fsmx.Struct, transitions: %{
+    "one" => ["two", "three"],
+    "two" => ["three", "four"],
+    "three" => "four",
+    "four" => :*, # can transition to any state
+    :* => ["five"] # can transition from any state to "five"
+  }
+
+  use Fsmx.Struct,
+    state_field: :other_state,
+    transitions: %{
+        "initial" => ["middle", "middle2"],
+        "middle" => "middle2",
+        :* => "final"
+    }
+end
+```
+
+Use it via the `Fsmx.transition/3` function:
+
+```elixir
+struct = %App.StateMachine{state: "one", other_state: "initial", data: nil}
+
+Fsmx.transition(struct, "two")
+# {:ok, %App.StateMachine{state: "two", other_state: "initial"}}
+
+Fsmx.transition(struct, "final", field: :other_state)
+# {:ok, %App.StateMachine{state: "one", other_state: "final"}}
 ```
 
 ## Ecto support

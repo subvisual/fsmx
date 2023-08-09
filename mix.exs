@@ -1,13 +1,13 @@
 defmodule Fsmx.MixProject do
   use Mix.Project
 
-  @version "0.4.1"
+  @version "0.5.0"
 
   def project do
     [
       app: :fsmx,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.11",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       applications: applications(Mix.env()),

@@ -3,7 +3,7 @@ defmodule Fsmx.EctoTest do
 
   alias Ecto.Multi
   alias Fsmx.Repo
-  alias Fsmx.TestEctoSchemas.{Simple, WithCallbacks, WithSeparateFsm}
+  alias Fsmx.TestEctoSchemas.{Simple, WithCallbacks, WithSeparateFsm, MultiState}
 
   describe "transition_changeset/2" do
     test "returns a changeset" do
@@ -37,10 +37,18 @@ defmodule Fsmx.EctoTest do
 
       assert Ecto.Changeset.get_change(two_changeset, :state) == "2"
     end
+
+    test "works the same with multiple states" do
+      one = %MultiState{state: "1", other_state: "1"}
+
+      two_changeset = Fsmx.transition_changeset(one, "2", [], state_field: :other_state)
+
+      assert Ecto.Changeset.get_change(two_changeset, :other_state) == "2"
+    end
   end
 
   describe "transition/2 with callbacks" do
-    test "calls before_transition/2 on struct" do
+    test "calls before_transition/3 on struct" do
       one = %WithCallbacks.ValidBefore{state: "1", before: false}
 
       two = Fsmx.transition_changeset(one, "2")
@@ -48,13 +56,23 @@ defmodule Fsmx.EctoTest do
       assert %WithCallbacks.ValidBefore{before: "1"} = two.data
     end
 
-    test "fails if before_transition/2 returns an error" do
+    test "fails if before_transition/3 returns an error" do
       one = %WithCallbacks.InvalidBefore{state: "1", before: false}
 
       changeset = Fsmx.transition_changeset(one, "2")
 
       refute changeset.valid?
       assert changeset.errors == [state: {"transition_changeset failed: before_failed", []}]
+    end
+
+    test "call before_transition/4 on struct with new state" do
+      one = %WithCallbacks.MultiStateValidBefore{state: "1", other_state: "1", before: false}
+
+      two = Fsmx.transition_changeset(one, "2")
+      assert %WithCallbacks.MultiStateValidBefore{before: "1"} = two.data
+
+      new_two = Fsmx.transition_changeset(one, "2", %{}, state_field: :other_state)
+      assert %WithCallbacks.MultiStateValidBefore{before: "2"} = new_two.data
     end
   end
 
@@ -131,6 +149,20 @@ defmodule Fsmx.EctoTest do
       updated_schema = Repo.get(WithCallbacks.InvalidAfterMulti, schema.id)
 
       assert %WithCallbacks.InvalidAfterMulti{state: "1"} = updated_schema
+    end
+
+    test "adds a transition changeset to the given multi for a new state" do
+      one = %MultiState{state: "1", other_state: "1"}
+
+      multi =
+        Fsmx.transition_multi(Multi.new(), one, "transition", "2", %{}, state_field: :other_state)
+
+      assert %Ecto.Multi{operations: operations} = multi
+
+      assert [_, {"transition", {:changeset, two_changeset, []}}] = operations
+      assert %Ecto.Changeset{} = two_changeset
+      assert two_changeset.data.other_state == "1"
+      assert Ecto.Changeset.get_change(two_changeset, :other_state) == "2"
     end
   end
 end
