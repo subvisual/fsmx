@@ -64,8 +64,8 @@ defmodule Fsmx.Fsm do
       def before_transition(struct, _from, _to, _opts), do: {:ok, struct}
 
       if Code.ensure_loaded?(Ecto) do
-        def transition_changeset(changeset, _from, _to, _params, _opts \\ []), do: changeset
-        def after_transition_multi(struct, _from, _to, _opts \\ []), do: {:ok, struct}
+        def transition_changeset(changeset, _from, _to, _params, _opts), do: changeset
+        def after_transition_multi(struct, _from, _to, _opts), do: {:ok, struct}
       end
     end
   end

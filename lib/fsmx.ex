@@ -20,6 +20,7 @@ defmodule Fsmx do
   if Code.ensure_loaded?(Ecto) do
     @spec transition_changeset(struct(), state_t(), map, opts_t()) :: Ecto.Changeset.t()
     def transition_changeset(%mod{} = schema, new_state, params \\ %{}, opts \\ []) do
+    def transition_changeset(%mod{} = schema, new_state, params, opts) do
       opts = Keyword.put_new(opts, :state_field, Fsm.default_state_field())
       state_field = Keyword.get(opts, :state_field)
       state = schema |> Map.fetch!(state_field)
