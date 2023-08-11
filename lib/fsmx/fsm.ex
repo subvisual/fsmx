@@ -61,11 +61,11 @@ defmodule Fsmx.Fsm do
 
   defmacro __before_compile__(_env) do
     quote generated: false do
-      def before_transition(struct, _from, _to, _state_field), do: {:ok, struct}
+      def before_transition(struct, _from, _to, _opts \\ []), do: {:ok, struct}
 
       if Code.ensure_loaded?(Ecto) do
-        def transition_changeset(changeset, _from, _to, _params, _state_field), do: changeset
-        def after_transition_multi(struct, _from, _to, _state_field), do: {:ok, struct}
+        def transition_changeset(changeset, _from, _to, _params, _opts \\ []), do: changeset
+        def after_transition_multi(struct, _from, _to, _opts \\ []), do: {:ok, struct}
       end
     end
   end
