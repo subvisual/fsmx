@@ -3,7 +3,7 @@ defmodule Fsmx.EctoTest do
 
   alias Ecto.Multi
   alias Fsmx.Repo
-  alias Fsmx.TestEctoSchemas.{Simple, WithCallbacks, WithSeparateFsm, MultiState}
+  alias Fsmx.TestEctoSchemas.{Simple, WithCallbacks, WithSeparateFsm, MultiState, WithChangesets}
 
   describe "transition_changeset/2" do
     test "returns a changeset" do
@@ -83,6 +83,16 @@ defmodule Fsmx.EctoTest do
       two = Fsmx.transition_changeset(one, "2")
 
       assert %WithSeparateFsm{before: "1"} = two.data
+    end
+  end
+
+  describe "transition/4" do
+    test "works even if you don't define all possibilities" do
+      one = %WithChangesets{state: "one"}
+
+      three = Fsmx.transition_changeset(one, "three", %{})
+
+      assert Ecto.Changeset.get_change(three, :state) == "three"
     end
   end
 

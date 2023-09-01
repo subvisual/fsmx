@@ -10,4 +10,4 @@ config :fsmx, Fsmx.Repo,
   database: "fsmx_test",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :logger, level: :warn
+config :logger, level: :warning
